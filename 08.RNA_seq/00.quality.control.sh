@@ -1,0 +1,1 @@
+java -jar trimmomatic-0.38.jar PE -phred33  -threads 8 ../Raw.data/${i}_R1.fq.gz ../Raw.data/${i}_R2.fq.gz  ./${i}_R1.retain.fq.gz ./${i}_R1.filter.fq.gz ./${i}_R2.retain.fq.gz ./${i}_R2.filter.fq.gz  LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:80 HEADCROP:9 
