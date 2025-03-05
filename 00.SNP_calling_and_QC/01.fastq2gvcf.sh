@@ -1,6 +1,6 @@
-sentieon_path=/public/home/shiyan/000-software/sentieon-genomics-202112.01
-data_path=/public/home/shiyan/001-pea_WGS_data/01-JIC
-ref_genome=/public/home/shiyan/002-pea_ref/03-ZW6/ZW6_ref.fa
+sentieon_path=sentieon-genomics-202112.01
+data_path=./
+ref_genome=./ZW6_ref.fa
 
 for sample in `cat sample.list`;
 do
@@ -78,19 +78,10 @@ time $sentieon_path/bin/sentieon driver -t $nt -i ${sample}.sorted.bam --algo De
 #time $sentieon_path/bin/sentieon driver -r $ref_genome -t $nt -i ${sample}.deduped.bam --algo Realigner ${sample}.realigned.bam
 
 # ******************************************
-# 5. Base recalibration
-# ******************************************
-rm ${sample}.sorted.bam ${sample}.sorted.bam.bai
-time $sentieon_path/bin/sentieon driver -r $ref_genome -t $nt -i ${sample}.deduped.bam --algo QualCal ${sample}_recal_data.table
-time $sentieon_path/bin/sentieon driver -r $ref_genome -t $nt -i ${sample}.deduped.bam -q ${sample}_recal_data.table --algo QualCal ${sample}_recal_data.table.post
-$sentieon_path/bin/sentieon driver -t $nt --algo QualCal --plot --before ${sample}_recal_data.table --after ${sample}_recal_data.table.post ${sample}_recal.csv
-$sentieon_path/bin/sentieon plot QualCal -o ${sample}_recal_plots.pdf ${sample}_recal.csv
-
-# ******************************************
-# 6. HC Variant caller
+# 5. HC Variant caller
 # ******************************************
 time $sentieon_path/bin/sentieon driver -r $ref_genome -t $nt -i ${sample}.deduped.bam  --algo Haplotyper --emit_mode gvcf ${sample}.gvcf.gz
-samtools view -h -T /public/home/shiyan/002-pea_ref/03-ZW6/ZW6_ref.fa -C -@ 8 ${sample}.deduped.bam -o ${sample}.deduped.cram
+samtools view -h -T ./ZW6_ref.fa -C -@ 8 ${sample}.deduped.bam -o ${sample}.deduped.cram
 rm ${sample}.deduped.bam ${sample}.deduped.bam.bai
 ">> ${sample}/${sample}.sentieon.sh
 done
